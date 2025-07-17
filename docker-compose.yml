@@ -1,0 +1,73 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:13
+    container_name: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  service-discovery:
+    build: ./service-discovery
+    container_name: service-discovery
+    ports:
+      - "8761:8761"
+    depends_on:
+      - postgres
+
+  api-gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      - service-discovery
+      - user-service
+      - product-catalog-service
+      - order-service
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://service-discovery:8761/eureka/
+
+  user-service:
+    build: ./user-service
+    container_name: user-service
+    ports:
+      - "8081:8081"
+    depends_on:
+      - postgres
+      - service-discovery
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/dev
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://service-discovery:8761/eureka/
+
+  product-catalog-service:
+    build: ./product-catalog-service
+    container_name: product-catalog-service
+    ports:
+      - "8082:8082"
+    depends_on:
+      - postgres
+      - service-discovery
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/dev
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://service-discovery:8761/eureka/
+
+  order-service:
+    build: ./order-service
+    container_name: order-service
+    ports:
+      - "8083:8083"
+    depends_on:
+      - postgres
+      - service-discovery
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/dev
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://service-discovery:8761/eureka/
+
+volumes:
+  postgres-data:
