@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
+import { loginApi, signupApi } from '../api';
 
 interface User {
   id: string;
@@ -9,14 +10,15 @@ interface User {
 
 interface AuthState {
   user: User | null;
+  token: string | null;
   isAuthenticated: boolean;
 }
 
 interface AuthContextType {
   auth: AuthState;
-  login: (user: User) => void;
+  login: (email: string, password: string) => Promise<void>;
   logout: () => void;
-  register: (userData: Omit<User, 'id'>) => void;
+  register: (data: Omit<User, 'id'> & { password: string }) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -24,29 +26,28 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [auth, setAuth] = useState<AuthState>({
     user: null,
+    token: null,
     isAuthenticated: false,
   });
 
-  const login = (user: User) => {
-    setAuth({
-      user,
-      isAuthenticated: true,
-    });
+  const login = async (email: string, password: string) => {
+    const resp = await loginApi({ username: email, password });
+    const user: User = { id: email, name: email, email };
+    setAuth({ user, token: resp.token, isAuthenticated: true });
   };
 
   const logout = () => {
-    setAuth({
-      user: null,
-      isAuthenticated: false,
-    });
+    setAuth({ user: null, token: null, isAuthenticated: false });
   };
 
-  const register = (userData: Omit<User, 'id'>) => {
-    const newUser = {
-      ...userData,
-      id: Date.now().toString(),
-    };
-    login(newUser);
+  const register = async (data: Omit<User, 'id'> & { password: string }) => {
+    await signupApi({
+      username: data.email,
+      password: data.password,
+      email: data.email,
+      phone: data.phone,
+    });
+    await login(data.email, data.password);
   };
 
   return (
