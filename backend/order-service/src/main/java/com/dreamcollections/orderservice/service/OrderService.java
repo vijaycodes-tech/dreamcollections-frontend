@@ -51,6 +51,10 @@ public class OrderService {
         return orderRepository.findByUserId(userId);
     }
 
+    public List<Order> getAllOrders() {
+        return orderRepository.findAll();
+    }
+
     public Order getGuestOrderByOrderId(Long orderId) {
         return orderRepository.findById(orderId).orElse(null);
     }
