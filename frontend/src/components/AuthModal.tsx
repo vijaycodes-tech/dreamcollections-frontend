@@ -23,29 +23,25 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, defaultTab = 'lo
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (authMethod === 'phone' && !showOTP) {
       setShowOTP(true);
       return;
     }
 
     if (activeTab === 'login') {
-      login({
-        id: '1',
-        name: formData.name || 'User',
-        email: formData.email,
-        phone: formData.phone
-      });
+      await login(formData.email, formData.password);
     } else {
-      register({
+      await register({
         name: formData.name,
         email: formData.email,
-        phone: formData.phone
+        phone: formData.phone,
+        password: formData.password,
       });
     }
-    
+
     onClose();
   };
 
@@ -55,12 +51,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, defaultTab = 'lo
   };
 
   const handleSocialLogin = (provider: string) => {
-    login({
-      id: '1',
-      name: `${provider} User`,
-      email: `user@${provider}.com`
-    });
-    onClose();
+    // Social login is not implemented in the backend yet
+    console.warn(`Social login with ${provider} is not supported`);
   };
 
   const resetForm = () => {

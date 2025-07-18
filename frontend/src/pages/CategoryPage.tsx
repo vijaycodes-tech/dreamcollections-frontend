@@ -1,14 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Filter, Grid, List } from 'lucide-react';
+import { fetchProducts, Product } from '../api';
 
 const CategoryPage: React.FC = () => {
   const { category, subcategory } = useParams();
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 1000]);
+  const [products, setProducts] = useState<Product[]>([]);
 
-  // Sample product data
-  const products = [
+  useEffect(() => {
+    fetchProducts()
+      .then(setProducts)
+      .catch(err => console.error('Failed to load products', err));
+  }, []);
+
+  // Fallback sample data
+  const sampleProducts = [
     {
       id: '1',
       name: 'Elegant Pearl Necklace',
@@ -78,7 +86,8 @@ const CategoryPage: React.FC = () => {
     bridal: ['mehendi', 'wedding']
   };
 
-  const filteredProducts = products.filter(product => {
+  const productList = products.length ? products : sampleProducts;
+  const filteredProducts = productList.filter(product => {
     if (subcategory) {
       return product.category === subcategory;
     }
@@ -207,7 +216,7 @@ const CategoryPage: React.FC = () => {
                 >
                   <div className={`${viewMode === 'grid' ? 'aspect-square' : 'aspect-video lg:aspect-[4/3]'}`}>
                     <img
-                      src={product.image}
+                      src={(product as any).image || (product as any).imageUrl}
                       alt={product.name}
                       className="w-full h-full object-cover"
                     />
