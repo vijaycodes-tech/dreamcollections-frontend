@@ -22,12 +22,29 @@ public class OrderController {
 
     @PostMapping
     public ResponseEntity<Order> createOrder(@RequestBody OrderDto orderDto) {
-        Order order = orderService.createOrder(orderDto);
+        Order order = orderService.createOrder(orderDto, null); // For registered users
+        return ResponseEntity.ok(order);
+    }
+
+    @PostMapping("/guest")
+    public ResponseEntity<Order> createGuestOrder(@RequestBody OrderDto orderDto) {
+        Order order = orderService.createOrder(orderDto, null); // For guest users
+        return ResponseEntity.ok(order);
+    }
+
+    @PostMapping("/guest")
+    public ResponseEntity<Order> createGuestOrder(@RequestBody OrderDto orderDto) {
+        Order order = orderService.createGuestOrder(orderDto);
         return ResponseEntity.ok(order);
     }
 
     @GetMapping("/user/{userId}")
-    public List<Order> getOrdersByUserId(@PathVariable String userId) {
+    public List<Order> getOrdersByUserId(@PathVariable Long userId) {
         return orderService.getOrdersByUserId(userId);
+    }
+
+    @GetMapping("/guest/{orderId}")
+    public Order getGuestOrderByOrderId(@PathVariable Long orderId) {
+        return orderService.getGuestOrderByOrderId(orderId);
     }
 }

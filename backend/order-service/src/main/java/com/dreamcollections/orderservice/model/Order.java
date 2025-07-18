@@ -1,6 +1,10 @@
 package com.dreamcollections.orderservice.model;
 
+import com.dreamcollections.orderservice.model.OrderStatus;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -16,6 +20,7 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private Long userId; // Null for guest users
     private String customerName;
     private String shippingAddress;
     private String city;
@@ -23,8 +28,13 @@ public class Order {
     private String zipCode;
     private String phoneNumber;
     private String email;
-    private String orderStatus;
 
-    @OneToMany(mappedBy = "order")
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    private List<OrderHistory> orderHistory;
 }
