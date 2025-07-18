@@ -1,4 +1,3 @@
-version: '3.8'
 services:
   postgres:
     image: postgres:13
@@ -17,8 +16,6 @@ services:
     container_name: service-discovery
     ports:
       - "8761:8761"
-    depends_on:
-      - postgres
 
   api-gateway:
     build: ./api-gateway
@@ -30,6 +27,7 @@ services:
       - user-service
       - product-catalog-service
       - order-service
+      - cart-service
     environment:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://service-discovery:8761/eureka/
 
