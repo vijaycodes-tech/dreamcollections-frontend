@@ -4,10 +4,9 @@ import com.dreamcollections.productcatalogservice.model.Category;
 import com.dreamcollections.productcatalogservice.model.Product;
 import com.dreamcollections.productcatalogservice.repository.CategoryRepository;
 import com.dreamcollections.productcatalogservice.repository.ProductRepository;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class ProductService {
@@ -20,6 +19,10 @@ public class ProductService {
 
     public List<Product> getAllProducts() {
         return productRepository.findAll();
+    }
+
+    public Product getProductById(Long id) {
+        return productRepository.findById(id).orElse(null);
     }
 
     public List<Product> getProductsByCategory(Long categoryId) {
