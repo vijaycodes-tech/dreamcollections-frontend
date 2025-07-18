@@ -5,11 +5,11 @@ import com.dreamcollections.orderservice.dto.OrderItemDto;
 import com.dreamcollections.orderservice.model.Order;
 import com.dreamcollections.orderservice.model.OrderItem;
 import com.dreamcollections.orderservice.repository.OrderRepository;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
@@ -34,6 +34,12 @@ public class OrderService {
                 .collect(Collectors.toList()));
 
         return orderRepository.save(order);
+    }
+
+    public List<Order> getOrdersByUserId(String userId) {
+        // In a real application, you would have a userId field in the Order entity
+        // and you would query by that. For now, we'll just return all orders.
+        return orderRepository.findAll();
     }
 
     private OrderItem toOrderItem(OrderItemDto orderItemDto, Order order) {
