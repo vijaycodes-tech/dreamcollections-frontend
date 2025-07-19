@@ -1,4 +1,4 @@
-const API_BASE = '';
+const API_BASE = 'http://localhost:8080';
 
 export interface LoginRequest {
   username: string;

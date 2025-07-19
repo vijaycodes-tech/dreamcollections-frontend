@@ -2,6 +2,7 @@ package com.dreamcollections.productcatalogservice.controller;
 
 import com.dreamcollections.productcatalogservice.model.Category;
 import com.dreamcollections.productcatalogservice.model.Product;
+import com.dreamcollections.productcatalogservice.model.Subcategory;
 import com.dreamcollections.productcatalogservice.service.ProductService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,14 +32,24 @@ public class ProductController {
         return productService.getProductById(id);
     }
 
-    @GetMapping("/category/{categoryId}")
-    public List<Product> getProductsByCategory(@PathVariable Long categoryId) {
-        return productService.getProductsByCategory(categoryId);
+    @GetMapping("/subcategory/{subcategoryId}")
+    public List<Product> getProductsBySubcategory(@PathVariable Long subcategoryId) {
+        return productService.getProductsBySubcategory(subcategoryId);
     }
 
-    @GetMapping("/categories")
-    public List<Category> getAllCategories() {
+    @GetMapping("/collections")
+    public List<Category> getAllCollections() {
         return productService.getAllCategories();
+    }
+
+    @GetMapping("/subcategories")
+    public List<Subcategory> getAllSubcategories() {
+        return productService.getAllSubcategories();
+    }
+
+    @GetMapping("/collections/{collectionId}/subcategories")
+    public List<Subcategory> getSubcategoriesByCollection(@PathVariable Long collectionId) {
+        return productService.getSubcategoriesByCollection(collectionId);
     }
 
     @PostMapping

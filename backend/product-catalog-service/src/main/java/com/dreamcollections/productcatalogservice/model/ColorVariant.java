@@ -4,21 +4,22 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.util.List;
+import java.math.BigDecimal;
 import lombok.Data;
 
 @Entity
-@Table(name = "collections")
+@Table(name = "color_variants")
 @Data
-public class Category {
+public class ColorVariant {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
-    private String slug;
+    private String colorName;
+    private String sku;
+    private BigDecimal priceAdjustment;
 
-    @OneToMany(mappedBy = "collection")
-    private List<Subcategory> subcategories;
+    @ManyToOne
+    private Product product;
 }
